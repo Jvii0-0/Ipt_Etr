@@ -1,0 +1,229 @@
+{# =====================================================================
+  TEMPLATE: MEMBER PROFILE PAGE (FlASK + JINJA2)
+===================================================================== #}
+
+{# =====================================================================
+  WHAT:
+  This template renders an individual member profile page in the IPT-101 system.
+  
+  PURPOSE:
+  - Displays member information dynamically from Flask backend
+  - Shows navigation between multiple members
+  - Displays reflections, tags, and learning modules
+  - Provides structured UI for educational portfolio system
+  
+  TECHNOLOGIES USED:
+  - Flask (backend routing)
+  - Jinja2 (templating engine)
+  - HTML + inline CSS (UI rendering)
+  
+  DATA SOURCE:
+  - `member` dictionary passed from Flask route
+  - `mid` (member ID for navigation highlighting)
+===================================================================== #}
+
+{% extends "base.html" %}
+
+{% block title %}
+{{ member.name }} — IPT-101
+{% endblock %}
+
+
+{% block content %}
+<div class="container">
+
+
+  {# =================================================================
+    NAVIGATION SECTION (MEMBER SWITCHER)
+  ================================================================= #}
+  {# WHAT:
+     Creates buttons to navigate between Member 1–5.
+  
+     WHY:
+     - Allows quick switching between profiles
+     - Improves usability for multi-user dataset
+  #}
+
+  <div style="display:flex;gap:6px;margin-bottom:1.5rem;flex-wrap:wrap">
+
+    {% for i in range(1,6) %}
+    <a href="/member/{{ i }}"
+       class="btn {% if i==mid %}btn-primary{% endif %}"
+       style="font-size:13px">
+       Member {{ i }}
+    </a>
+    {% endfor %}
+
+  </div>
+
+
+  {# =================================================================
+    MEMBER PROFILE CARD (HEADER SECTION)
+  ================================================================= #}
+  {# WHAT:
+     Displays core identity information of the member.
+  
+     COMPONENTS:
+     - Avatar (initials)
+     - Full name
+     - Course + batch info
+     - Tags (skills/interests)
+  #}
+
+  <div style="background:var(--surface);border:1px solid var(--border);
+              border-radius:16px;padding:28px;margin-bottom:1.5rem;
+              backdrop-filter:blur(8px)">
+
+
+    {# PROFILE HEADER ROW #}
+    <div style="display:flex;align-items:center;gap:16px;margin-bottom:20px;flex-wrap:wrap">
+
+
+      {# AVATAR CIRCLE #}
+      {# WHAT:
+         Displays initials inside colored circle
+         
+         WHY:
+         - Visual identity marker
+         - Quick recognition
+      #}
+      <div style="width:58px;height:58px;border-radius:50%;
+                  display:flex;align-items:center;justify-content:center;
+                  font-weight:700;font-size:18px;flex-shrink:0;
+                  background:{{ member.bg }};color:{{ member.color }}">
+        {{ member.initials }}
+      </div>
+
+
+      {# MEMBER INFO #}
+      <div>
+
+        <div style="font-size:19px;font-weight:700;color:#fff;margin-bottom:4px">
+          {{ member.name }}
+        </div>
+
+        <div style="font-size:12px;color:var(--muted);margin-bottom:8px">
+          IPT-101 · Batch 2025–2026
+        </div>
+
+
+        {# TAGS SECTION #}
+        {# WHAT:
+           Displays skill/interest tags for each member
+        #}
+        <div style="display:flex;gap:5px;flex-wrap:wrap">
+
+          {% for tag in member.tags %}
+          <span style="padding:3px 10px;border-radius:999px;
+                       font-size:11px;font-weight:500;
+                       background:{{ member.bg }};color:{{ member.color }}">
+            {{ tag }}
+          </span>
+          {% endfor %}
+
+        </div>
+
+      </div>
+    </div>
+
+
+    <hr style="border:none;border-top:1px solid var(--border);margin-bottom:20px">
+
+
+    {# REFLECTION SECTION #}
+    {# WHAT:
+       Displays paragraph-based reflections or learning insights
+       
+       WHY:
+       - Captures student understanding
+       - Supports reflective learning documentation
+    #}
+
+    <div style="font-size:14px;font-weight:600;color:#fff;margin-bottom:14px">
+      Reflections & Realizations
+    </div>
+
+    {% for para in member.paragraphs %}
+    <p style="font-size:14px;color:var(--muted);line-height:1.8;margin-bottom:14px">
+      {{ para }}
+    </p>
+    {% endfor %}
+
+  </div>
+
+
+  {# =================================================================
+    LESSONS GRID SECTION (CURRICULUM OVERVIEW)
+  ================================================================= #}
+  {# WHAT:
+     Displays structured list of lessons covered in IPT-101 course.
+  
+     WHY:
+     - Provides quick curriculum overview
+     - Acts as learning roadmap visualization
+     - Enhances portfolio structure
+  
+     DATA STRUCTURE:
+     - Tuple list: (Lesson No, Title, Description, Icon)
+  #}
+
+  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
+              gap:12px;margin-bottom:1.5rem">
+
+
+    {% set lessons=[
+      ('Lesson 1','Data Preparation & Program Logic',
+       'String methods, numeric conversion, data cleaning and validation before analysis.','🧹'),
+
+      ('Lesson 2','Control Structures',
+       'Conditionals, ternary expressions, match statements, and filtering data with loops.','🔀'),
+
+      ('Lesson 3','Functions & Exception Handling',
+       'Defining functions, *args, **kwargs, lambda, recursion, and try-except for data pipelines.','⚙️'),
+
+      ('Lesson 4','Data Structures for Analytics',
+       'Lists, dictionaries, nested structures, searching, sorting, and working with collections.','🗂️'),
+
+      ('Lesson 5','OOP in Python',
+       'Classes, objects, constructors, attributes, methods, and encapsulation.','🐍'),
+
+      ('Lesson 6','Pandas & NumPy',
+       'DataFrames, CSV loading, fillna, groupby, and numerical computation.','📊'),
+
+      ('Lesson 7','Matplotlib',
+       'Bar, line, pie, and doughnut charts for data visualization.','📈'),
+
+      ('Lesson 8','Flask & REST API',
+       'Routing, dynamic URLs, sessions, and REST API endpoints.','🌐')
+    ] %}
+
+
+    {# LESSON CARD LOOP #}
+    {% for num,title,desc,icon in lessons %}
+    <div style="background:var(--surface);border:1px solid var(--border);
+                border-radius:11px;padding:16px;backdrop-filter:blur(8px)">
+
+      <div style="font-size:11px;color:var(--muted);
+                  text-transform:uppercase;letter-spacing:.05em;margin-bottom:5px">
+        {{ num }}
+      </div>
+
+      <div style="font-size:13px;font-weight:600;color:#fff;margin-bottom:6px">
+        {{ icon }} {{ title }}
+      </div>
+
+      <div style="font-size:12px;color:var(--muted);line-height:1.55">
+        {{ desc }}
+      </div>
+
+    </div>
+    {% endfor %}
+
+  </div>
+
+
+  {# BACK BUTTON #}
+  <a href="/" class="btn">← Back to Dashboard</a>
+
+</div>
+{% endblock %}
