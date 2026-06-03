@@ -1,0 +1,218 @@
+{# =====================================================================
+  TEMPLATE: EDIT MEMBER PAGE (ADMIN PANEL - FLASK + JINJA2)
+===================================================================== #}
+
+{# =====================================================================
+  WHAT:
+  This template provides an admin interface for editing a member's data.
+  
+  PURPOSE:
+  - Allows updating member information (name, email, course, batch)
+  - Displays success/error feedback messages
+  - Provides safe navigation back to admin dashboard
+  
+  TECHNOLOGIES:
+  - Flask backend (POST form handling)
+  - Jinja2 templating engine
+  - HTML form submission
+  - Server-side validation feedback
+  
+  DATA SOURCE:
+  - `member` object (preloaded from backend)
+  - `mid` (member ID from URL route)
+  - `error` / `success` messages from Flask session/context
+===================================================================== #}
+
+{% extends "base.html" %}
+
+{% block title %}
+Edit Member {{ mid }} — Admin
+{% endblock %}
+
+
+{% block content %}
+<div class="container">
+
+
+  {# =================================================================
+    PAGE HEADER SECTION
+  ================================================================= #}
+  {# WHAT:
+     Displays page title and navigation link back to admin panel.
+  
+     WHY:
+     - Improves navigation flow
+     - Provides context for current admin action
+  #}
+
+  <div class="page-title">
+    ✏️ Edit Member {{ mid }} Info
+  </div>
+
+  <div class="page-sub">
+    <a href="/admin"
+       style="color:var(--muted);text-decoration:none">
+       ← Back to Admin
+    </a>
+  </div>
+
+
+  {# =================================================================
+    FORM CONTAINER CARD
+  ================================================================= #}
+  {# WHAT:
+     Encapsulates the entire form inside a styled card UI.
+  
+     WHY:
+     - Improves visual hierarchy
+     - Separates form from background content
+  #}
+
+  <div class="form-card">
+
+
+    {# ERROR MESSAGE DISPLAY #}
+    {# WHAT:
+       Shows validation or server errors from backend
+    #}
+    {% if error %}
+      <div class="alert alert-error">
+        {{ error }}
+      </div>
+    {% endif %}
+
+
+    {# SUCCESS MESSAGE DISPLAY #}
+    {# WHAT:
+       Shows confirmation after successful update
+    #}
+    {% if success %}
+      <div class="alert alert-success">
+        ✅ {{ success }}
+      </div>
+    {% endif %}
+
+
+    {# =================================================================
+      FORM SECTION (EDIT MEMBER DATA)
+    ================================================================= #}
+    {# WHAT:
+       Sends updated member data to backend using POST method.
+    
+       WHY POST?
+       - Secure data update
+       - Prevents data exposure in URL
+    #}
+
+    <form method="POST">
+
+
+      {# =============================================================
+        FIELD 1: FULL NAME
+      ============================================================= #}
+      {# WHAT:
+         Updates member's full name
+      #}
+      <div class="form-group">
+
+        <label class="form-label">Full Name</label>
+
+        <input name="name"
+               type="text"
+               class="form-input"
+               value="{{ member.name }}"
+               required>
+
+      </div>
+
+
+      {# =============================================================
+        FIELD 2: EMAIL
+      ============================================================= #}
+      {# WHAT:
+         Updates member email address
+      #}
+      <div class="form-group">
+
+        <label class="form-label">Email</label>
+
+        <input name="email"
+               type="email"
+               class="form-input"
+               value="{{ member.email }}">
+
+      </div>
+
+
+      {# =============================================================
+        FIELD 3: COURSE
+      ============================================================= #}
+      {# WHAT:
+         Updates academic course of member
+      #}
+      <div class="form-group">
+
+        <label class="form-label">Course</label>
+
+        <input name="course"
+               type="text"
+               class="form-input"
+               value="{{ member.course }}">
+
+      </div>
+
+
+      {# =============================================================
+        FIELD 4: BATCH
+      ============================================================= #}
+      {# WHAT:
+         Updates batch/year group of member
+      #}
+      <div class="form-group">
+
+        <label class="form-label">Batch</label>
+
+        <input name="batch"
+               type="text"
+               class="form-input"
+               value="{{ member.batch }}">
+
+      </div>
+
+
+      {# =================================================================
+        FORM ACTION BUTTONS
+      ================================================================= #}
+      {# WHAT:
+         Provides submit and cancel options.
+    
+       - Save Changes → submits form to backend
+       - Cancel → returns to admin dashboard
+      #}
+
+      <div style="display:flex;gap:10px;margin-top:4px">
+
+
+        <button type="submit"
+                class="btn btn-primary"
+                style="flex:1;padding:10px">
+
+          Save Changes
+        </button>
+
+
+        <a href="/admin"
+           class="btn"
+           style="flex:1;padding:10px;text-align:center">
+
+          Cancel
+        </a>
+
+      </div>
+
+    </form>
+
+  </div>
+
+</div>
+{% endblock %}
